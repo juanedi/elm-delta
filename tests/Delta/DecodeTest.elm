@@ -99,6 +99,23 @@ tests =
                                 , Insert (Text "d" { bold = True, italics = True })
                                 ]
                             )
+            , test "decodes delete operations" <|
+                \_ ->
+                    """
+                    { "ops": [
+                        { "insert": "a" },
+                        { "delete": 10 }
+                      ]
+                    }
+                    """
+                        |> Json.decodeString decoder
+                        |> Result.map Delta.ops
+                        |> Expect.equal
+                            (Ok
+                                [ Insert (Text "a" empty)
+                                , Delete 10
+                                ]
+                            )
             ]
         ]
 
