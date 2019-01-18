@@ -2,6 +2,8 @@ module Delta exposing
     ( Blot(..)
     , Delta(..)
     , Op(..)
+    , Range
+    , format
     , ops
     )
 
@@ -23,6 +25,16 @@ type Blot attrs
       Text String attrs
 
 
+type alias Range =
+    { index : Int, length : Int }
+
+
 ops : Delta attrs -> List (Op attrs)
 ops (Delta operations) =
     operations
+
+
+format : Range -> (attrs -> attrs) -> Delta attrs -> Delta attrs
+format range fun delta =
+    -- TODO: not implemented yet!
+    delta
