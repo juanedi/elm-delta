@@ -52,8 +52,7 @@ op config =
     Json.oneOf
         [ insert config
         , delete
-
-        -- , decodeRetain attrsDecoder
+        , retain config
         ]
 
 
@@ -74,6 +73,16 @@ delete : Decoder (Op attrs)
 delete =
     Json.map Delete
         (Json.field "delete" Json.int)
+
+
+retain : Config attrs -> Decoder (Op attrs)
+retain ((Config c) as config) =
+    Json.map2 Retain
+        (Json.field "retain" Json.int)
+        (fieldWithDefault "attributes"
+            c.empty
+            (attributes config)
+        )
 
 
 fieldWithDefault : String -> attrs -> Decoder attrs -> Decoder attrs

@@ -116,6 +116,40 @@ tests =
                                 , Delete 10
                                 ]
                             )
+            , test "decodes retain operations with no attributes" <|
+                \_ ->
+                    """
+                    { "ops": [
+                        { "insert": "a" },
+                        { "retain": 10 }
+                      ]
+                    }
+                    """
+                        |> Json.decodeString decoder
+                        |> Result.map Delta.ops
+                        |> Expect.equal
+                            (Ok
+                                [ Insert (Text "a" empty)
+                                , Retain 10 empty
+                                ]
+                            )
+            , test "decodes retain operations with attributes" <|
+                \_ ->
+                    """
+                    { "ops": [
+                        { "insert": "a" },
+                        { "retain": 10, "attributes": { "bold": true } }
+                      ]
+                    }
+                    """
+                        |> Json.decodeString decoder
+                        |> Result.map Delta.ops
+                        |> Expect.equal
+                            (Ok
+                                [ Insert (Text "a" empty)
+                                , Retain 10 { bold = True, italics = False }
+                                ]
+                            )
             ]
         ]
 
